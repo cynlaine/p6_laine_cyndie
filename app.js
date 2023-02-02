@@ -12,7 +12,6 @@ const sauceRoutes = require("./routes/sauce");
 
 //connexion à la BDD
 mongoose.connect(
-        // "mongodb+srv://" + process.env.DB_USER + ":" + process.env.DB_PWD + "@cluster0.uyv31cc.mongodb.net/sauce?retryWrites=true&w=majority",
         process.env.MONGO_URI,
         { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log("Connexion à MongoDB réussie !"))
