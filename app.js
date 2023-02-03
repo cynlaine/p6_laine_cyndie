@@ -32,9 +32,6 @@ app.use((req, res, next) => {
     next();
 });
 
-//middleware rate limit -> anti bruteforce
-const limiter = require("./middleware/rate-limit");
-app.use(limiter);
 
 //parse les requêtes en json
 app.use(express.json());
