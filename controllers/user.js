@@ -1,16 +1,11 @@
-//import modules
+const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
-//import modèle
-const User = require("../models/user");
 
 // création utilisateur
 exports.signup = (req, res, next) => {
     if (!req.body.email || !req.body.password) {
-        return res
-            .status(400)
-            .json({ message: "Un ou plusieurs champs sont vides" });
+        return res.status(400).json({ message: "Un ou plusieurs champs sont vides" });
     }
     bcrypt
         .hash(req.body.password, 10) //hash du mdp
@@ -20,9 +15,7 @@ exports.signup = (req, res, next) => {
                 password: hash,
             });
             user.save()
-                .then(() =>
-                    res.status(201).json({ message: "Utilisateur créé !" })
-                )
+                .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
                 .catch((error) => res.status(400).json({ error }));
         })
         .catch((error) => res.status(500).json({ error }));
@@ -33,9 +26,7 @@ exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email }) //recherche si email existant dans la bdd
         .then((user) => {
             if (!user) {
-                return res
-                    .status(401)
-                    .json({ message: "Login ou mot de passe incorrect" });
+                return res.status(401).json({ message: "Login ou mot de passe incorrect" });
             }
             bcrypt
                 .compare(req.body.password, user.password) //compare le mdp saisi avec celui de la bdd

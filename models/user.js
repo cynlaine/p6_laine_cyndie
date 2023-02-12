@@ -1,4 +1,3 @@
-//import modules
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 require("mongoose-type-email");
@@ -12,5 +11,4 @@ const userSchema = mongoose.Schema({
 //vérifie que l'email n'existe pas déjà dans la BDD
 userSchema.plugin(uniqueValidator);
 
-//exports
 module.exports = mongoose.model("User", userSchema);

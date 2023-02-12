@@ -1,4 +1,3 @@
-//import module
 const multer = require("multer");
 
 // extensions acceptées
@@ -8,9 +7,11 @@ const MIME_TYPES = {
     "image/png": "png",
 };
 
-// config storage de Multer 
+// config storage de Multer
 const storage = multer.diskStorage({
-    destination: (req, file, callback) => { callback(null, "images"); }, // emplacement enregistrement des images
+    destination: (req, file, callback) => {
+        callback(null, "images");
+    }, // emplacement enregistrement des images
     filename: (req, file, callback) => {
         const name = file.originalname.split(" ").join("_"); //garde le nom d'origine et remplace les espaces par des underscores
         const extension = MIME_TYPES[file.mimetype];
@@ -18,5 +19,4 @@ const storage = multer.diskStorage({
     },
 });
 
-//exports
 module.exports = multer({ storage: storage }).single("image");

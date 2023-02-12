@@ -1,7 +1,4 @@
-//import modèle
 const Sauce = require("../models/sauce");
-
-//import modules
 const fs = require("fs");
 
 // requête toutes les sauces
@@ -23,14 +20,12 @@ exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce); //parse la requête form-data
 
     delete sauceObject._id; //suppression id transmise par le front
-    delete sauceObject._userId; //suppression pour remplacer par le token auth
+    delete sauceObject._userId; //suppression pour remplacer par le token
 
     const sauce = new Sauce({
         ...sauceObject,
         userId: req.auth.userId,
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-            req.file.filename
-        }`,
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
         likes: 0,
         dislikes: 0,
         usersLiked: [],
@@ -43,33 +38,25 @@ exports.createSauce = (req, res, next) => {
         .catch((error) => res.status(400).json({ error }));
 };
 
-// modification d'une sauce sélectionnée
+// modification d'une sauce
 exports.updateSauce = (req, res, next) => {
-    const sauceObject = req.file
+    const sauceObject = req.file //si requête contient une image on parse le form-data
         ? {
-              //si requête contient une image on parse le form-data
               ...JSON.parse(req.body.sauce),
-              imageUrl: `${req.protocol}://${req.get("host")}/images/${
-                  req.file.filename
-              }`,
+              imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
           }
         : { ...req.body }; //sinon on traite simplement l'objet entrant
 
-    delete sauceObject._userId; //suppression pour remplacer par le token auth
+    delete sauceObject._userId; //suppression pour remplacer par le token
 
-    Sauce.findOne({ _id: req.params.id }) //recherche la sauce correspondante avec l'id de la requête
+    Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
             if (req.file) {
-                const filename = sauce.imageUrl.split("/images/")[1]; //récupère le nom du fichier image
+                const filename = sauce.imageUrl.split("/images/")[1];
                 fs.unlink(`images/${filename}`, () => {});
             }
-            Sauce.updateOne(
-                { _id: req.params.id },
-                { ...sauceObject, _id: req.params.id }
-            )
-                .then(() =>
-                    res.status(200).json({ message: "Sauce modifiée !" })
-                )
+            Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+                .then(() => res.status(200).json({ message: "Sauce modifiée !" }))
                 .catch((error) => res.status(401).json({ error }));
         })
         .catch((error) => {
@@ -77,17 +64,15 @@ exports.updateSauce = (req, res, next) => {
         });
 };
 
-// suppression d'une sauce sélectionnée
+// suppression d'une sauce
 exports.deleteSauce = (req, res, next) => {
-    Sauce.findOne({ _id: req.params.id }) //recherche la sauce correspondante avec l'id de la requête
+    Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
-            const filename = sauce.imageUrl.split("/images/")[1]; //récupère le nom du fichier image
+            const filename = sauce.imageUrl.split("/images/")[1];
             fs.unlink(`images/${filename}`, () => {
                 //supprime l'image
                 Sauce.deleteOne({ _id: req.params.id })
-                    .then(() =>
-                        res.status(200).json({ message: "Sauce supprimée !" })
-                    )
+                    .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
                     .catch((error) => res.status(400).json({ error }));
             });
         })
@@ -119,11 +104,10 @@ exports.likeSauce = (req, res, next) => {
                 .then(() => res.status(200).json({ message: "Sauce dislikée" }))
                 .catch((error) => res.status(400).json({ error }));
             break;
-        case 0: //si l'user annule son like/dislike
+        case 0: //si l'user annule son like/dislike on supprime son id du tableau correspondant
             Sauce.findOne({ _id: req.params.id })
                 .then((sauce) => {
                     if (sauce.usersLiked.includes(req.body.userId)) {
-                        //si le tableau usersLiked contient l'ID de l'user on le supprime
                         Sauce.updateOne(
                             { _id: req.params.id },
                             {
@@ -131,14 +115,9 @@ exports.likeSauce = (req, res, next) => {
                                 $inc: { likes: -1 },
                             }
                         )
-                            .then(() =>
-                                res
-                                    .status(200)
-                                    .json({ message: "Like supprimé" })
-                            )
+                            .then(() => res.status(200).json({ message: "Like supprimé" }))
                             .catch((error) => res.status(400).json({ error }));
                     } else if (sauce.usersDisliked.includes(req.body.userId)) {
-                        //si le tableau usersDisliked contient l'ID de l'user on le supprime
                         Sauce.updateOne(
                             { _id: req.params.id },
                             {
@@ -146,11 +125,7 @@ exports.likeSauce = (req, res, next) => {
                                 $inc: { dislikes: -1 },
                             }
                         )
-                            .then(() =>
-                                res
-                                    .status(200)
-                                    .json({ message: "Dislike supprimé" })
-                            )
+                            .then(() => res.status(200).json({ message: "Dislike supprimé" }))
                             .catch((error) => res.status(400).json({ error }));
                     }
                 })

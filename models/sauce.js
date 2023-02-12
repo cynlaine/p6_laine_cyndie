@@ -1,4 +1,3 @@
-//import modules
 const mongoose = require("mongoose");
 
 //définition du schéma de données

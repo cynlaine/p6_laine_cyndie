@@ -1,13 +1,11 @@
-//import module
 const rateLimit = require("express-rate-limit");
 
 // config de rate-limit
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 3, // Limit each IP to 3 requests per `window` (here, per 15 minutes)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    max: 3, // limite chaque IP à 3 requêtes par fenêtre (ici 15min)
+    standardHeaders: true, // retourne les infos du limiter dans les headers `RateLimit-*`
+    legacyHeaders: false, // désactive les headers `X-RateLimit-*`
 });
 
-//exports
 module.exports = limiter;

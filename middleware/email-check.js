@@ -1,7 +1,7 @@
+//contrôle que l'email saisi respecte la bonne syntaxe
+
 module.exports = (req, res, next) => {
-    let emailType =
-        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    //format adresse email
+    let emailType = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     let emailCheck = emailType.test(req.body.email);
     if (emailCheck) {
         next();

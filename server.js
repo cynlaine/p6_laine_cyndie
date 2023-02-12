@@ -1,5 +1,5 @@
 //import config variables environnement
-require('dotenv').config();
+require("dotenv").config();
 
 //import modules
 const http = require("http");
@@ -18,7 +18,7 @@ const normalizePort = (val) => {
     return false;
 };
 
-// définit le port et le normalise 
+// définit le port et le normalise
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
@@ -28,8 +28,7 @@ const errorHandler = (error) => {
         throw error;
     }
     const address = server.address();
-    const bind =
-        typeof address === "string" ? "pipe " + address : "port: " + port;
+    const bind = typeof address === "string" ? "pipe " + address : "port: " + port;
     switch (error.code) {
         case "EACCES":
             console.error(bind + " requires elevated privileges.");
@@ -47,13 +46,12 @@ const errorHandler = (error) => {
 // démarre le serveur avec app.js
 const server = http.createServer(app);
 
-// si erreur KO, exécute errorHandler 
+// si serveur KO, exécute errorHandler
 server.on("error", errorHandler);
 // si serveur OK, affiche quel port ou canal est utilisé
 server.on("listening", () => {
     const address = server.address();
-    const bind =
-        typeof address === "string" ? "pipe " + address : "port " + port;
+    const bind = typeof address === "string" ? "pipe " + address : "port " + port;
     console.log("Listening on " + bind);
 });
 
